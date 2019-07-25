@@ -7,13 +7,10 @@ var sourcemaps  = require('gulp-sourcemaps');
 var rm          = require('gulp-rm');
 var rename      = require('gulp-rename');
 var concat      = require('gulp-concat');
-var browserSync = require('browser-sync').create('Server');
 
 /* ---------------\
 Wordpress Site URL
 -----------------*/
-var devUrl      = "http://seedling.test";
-
 var paths       = {
     styles: {
         src:    'assets/src/scss/*.scss',
@@ -46,14 +43,12 @@ gulp.task('styles', gulp.series( function() {
         .pipe( sourcemaps.write() )
         .pipe( concat( 'all.min.css' ) )
         .pipe( gulp.dest( paths.styles.dest ) )
-        .pipe( notify( 'SCSS build completed' ) )
-        .pipe( browserSync.stream() );
+        .pipe( notify( 'SCSS build completed' ) );
 }));
 
 gulp.task('fonts', gulp.series( function() {
     return gulp.src( paths.fonts.src )
-        .pipe( gulp.dest( paths.fonts.dest ) )
-        .pipe( browserSync.stream() );
+        .pipe( gulp.dest( paths.fonts.dest ) );
 }));
 
 gulp.task('scripts', gulp.series( function() {
@@ -72,9 +67,8 @@ gulp.task('scripts', gulp.series( function() {
         .pipe( concat('jquery.min.js') )
         .pipe( sourcemaps.write() )
         .pipe( uglify() )
-        .pipe( gulp.dest( paths.scripts.dest ) )        
-        .pipe( notify( 'Javascript build completed' ) )
-        .pipe( browserSync.stream() );
+        .pipe( gulp.dest( paths.scripts.dest ) )
+        .pipe( notify( 'Javascript build completed' ) );
 }));
 
 gulp.task('jquery', gulp.series(function() {
@@ -84,8 +78,7 @@ gulp.task('jquery', gulp.series(function() {
         .pipe( sourcemaps.write() )
         .pipe( uglify() )
         .pipe( gulp.dest( paths.scripts.dest ) )
-        .pipe( notify( 'jquery build completed' ) )
-        .pipe( browserSync.stream() );
+        .pipe( notify( 'jquery build completed' ) );
 }));
 
 
@@ -100,16 +93,10 @@ gulp.task('watch', gulp.series( function() {
         './**/*.php',
         './**/*.twig'
     ];
-    browserSync.init(files, {
-        proxy: {
-            target: devUrl
-        }
-    });
     notify( 'Watch started...' );
     gulp.watch( paths.scripts.src, gulp.series('scripts') );
     gulp.watch( paths.styles.src, gulp.series('styles') );
     gulp.watch( paths.fonts.src, gulp.series('fonts') );
-    gulp.watch( '*.twig' ).on( 'change', browserSync.reload );
 }));
 
 gulp.task( 'default', gulp.series( 'scripts', 'styles', 'fonts', 'watch' ) );
